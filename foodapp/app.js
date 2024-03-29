@@ -1,24 +1,4 @@
-// const express = require("express");
-// const app = express();
-// app.arguments(express.json());
-// let user = {};
-// app.get('/users', (req, res) => {
-//     // console.log(req.body.Name);
-//     res.send(users);
-//     //
-   
-// });
-// app.post('/users', (req, res) => {
-//     console.log(req);
-//     res.json({
-//         message: "data receipe",
-//         user: req.body
-//     });
-// })
-// app.listen(5000);
-
-
-const express = require('express');
+const express = require("express");
 const app = express();
 app.use(express.json());
 let user = [
@@ -41,24 +21,19 @@ let user = [
 
 const userRouter = express.Router();
 const authRouter = express.Router();
-app.use('/user', userRouter);
+app.use("/user", userRouter);
 app.use("/auth", authRouter);
 
 userRouter
-    .route("/")
-    .get(getUser)
-    .post(postUser)
-    .patch(updateUser)
-    .delete(deleteUser)
+  .route("/")
+  .get(getUser)
+  .post(postUser)
+  .patch(updateUser)
+  .delete(deleteUser);
 
-userRouter
-    .route("/:name")
-    .get(getUserById);
+userRouter.route("/:name").get(getUserById);
 
-authRouter
-    .route('/signup')
-    .get()
-.post()
+authRouter.route("/signup").get(getSignup).post(postSignup);
 //with query
 // app.get('/user', )
 
@@ -71,51 +46,64 @@ authRouter
 //params
 // app.get('/user/:name', );
 
-function getUser(req, res){
-    console.log(req.query);
-    let { name, age } = req.query;
-    // let filteredData=user.filter(userObj => {
-    //     return (userObj.name==name && userObj.age==age)
-    // })
-    // res.send(filteredData);
-    res.send(user);
+function getUser(req, res) {
+  console.log(req.query);
+  let { name, age } = req.query;
+  // let filteredData=user.filter(userObj => {
+  //     return (userObj.name==name && userObj.age==age)
+  // })
+  // res.send(filteredData);
+  res.send(user);
 }
 
-function postUser(req, res){
-    console.log(req.body.Name);
-    //then i can put this in db 
-    user.push(req.body);
-    res.json({
-        message: "Data received successfully",
-        user: req.body
-    });
+function postUser(req, res) {
+  console.log(req.body.Name);
+  //then i can put this in db
+  user.push(req.body);
+  res.json({
+    message: "Data received successfully",
+    user: req.body,
+  });
 }
 
-function updateUser(req, res){
+function updateUser(req, res) {
+  console.log(req.body);
+  let dataToBeUpdated = req.body;
+  for (key in dataToBeUpdated) {
+    user[key] = dataToBeUpdated[key];
+  }
+  res.json({
+    message: "data updated succesfully",
+  });
+}
+
+function deleteUser(req, res) {
+  user = {};
+  res.json({
+    msg: "user has been deleted",
+  });
+}
+
+function getUserById(req, res) {
+  console.log(req.params.name);
+  //let {id}=req.params;
+  // let user = db.findOne(id);
+  res.json({ msg: "user id is ", obj: req.params });
+}
+
+function getSignup(req, res) {
+    res.sendFile("/public/index.html", { root: __dirname });
+}
+
+function postSignup(req, res) {
+    let { email, name, password } = req.body;
     console.log(req.body);
-    let dataToBeUpdated = req.body;
-    for (key in dataToBeUpdated) {
-        user[key] = dataToBeUpdated[key];
-    }
     res.json({
-        message: "data updated succesfully"
+        msg: "user signed up",
+        email,
+        name,
+        password
     })
 }
-
-function deleteUser(req, res){
-    user = {};
-    res.json({
-        msg: "user has been deleted"
-    });
-}
-
-function getUserById(req, res){
-    console.log(req.params.name);
-    //let {id}=req.params;
-    // let user = db.findOne(id);
-    res.json({ msg: "user id is ", "obj": req.params });
-}
-
-
 
 app.listen(5000);
