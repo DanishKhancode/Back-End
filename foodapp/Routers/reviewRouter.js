@@ -1,6 +1,6 @@
 const express = require("express");
 const reviewRouter = express.Router();
-const { isAuthorised, protectRoute } = require('../helper');
+const { isAuthorised, protectRoute } = require('../helper.js');
 const { getAllReviews, top3Review, getPlanReview, createReview, updateReview, deleteReview } = require("../controller/reviewController.js");
 
 reviewRouter
